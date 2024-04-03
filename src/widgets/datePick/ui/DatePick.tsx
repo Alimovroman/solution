@@ -13,7 +13,7 @@ export const DatePick = () => {
         <div className={style.text}>Дата с</div>
         <DatePicker
           selected={startDate}
-          dateFormat="yyyy/MM/dd"
+          dateFormat="yyyy-MM-dd"
           onChange={(date) => setStartDate(date!)}
         />
       </div>
@@ -22,7 +22,7 @@ export const DatePick = () => {
         <DatePicker
           selected={endDate}
           onChange={(date) => setEndDate(date!)}
-          dateFormat="yyyy/MM/dd"
+          dateFormat="yyyy-MM-dd"
         />
       </div>
     </div>

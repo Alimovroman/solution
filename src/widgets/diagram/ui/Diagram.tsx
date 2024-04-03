@@ -1,4 +1,7 @@
+import { useEffect } from "react";
 import style from "./Diagram.module.css";
+import { diagramThunk } from "../diagramSlice";
+import { useActions } from "../../../common/hooks/useActions/useActions";
 
 export const Diagram = () => {
   return (
