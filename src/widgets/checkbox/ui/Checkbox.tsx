@@ -3,34 +3,61 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import { useState } from "react";
-import { useActions } from "../../../common/hooks/useActions/useActions";
-import { diagramThunk } from "../../diagram/diagramSlice";
+import { useActions } from "../../../common/hooks/useActions";
+import { diagramActions, diagramThunk } from "../../diagram/diagramSlice";
+import { useAppSelector } from "../../../common/hooks/useAppSelector";
+import {
+  checkedCnySelector,
+  checkedEuroSelector,
+  checkedUsdSelector,
+  dateSelector,
+} from "../../diagram/diagramSelector";
+import { useAppDispatch } from "../../../common/hooks/useAppDispatch";
 
 export const CheckBox = () => {
-  const [checkedEuro, setCheckedEuro] = useState(false);
-  const [checkedUsd, setCheckedUsd] = useState(false);
-  const [checkedCny, setCheckedCny] = useState(false);
+  const checkedEuro = useAppSelector(checkedEuroSelector);
+  const checkedUsd = useAppSelector(checkedUsdSelector);
+  const checkedCny = useAppSelector(checkedCnySelector);
   const { getDataDiagram } = useActions(diagramThunk);
+  const actionDiagram = diagramActions;
+  const dispatch = useAppDispatch();
+
+  const date = useAppSelector(dateSelector);
 
   const onChangeEuro = () => {
     let isGetvalue = !checkedEuro;
-    setCheckedEuro(!checkedEuro);
+    dispatch(actionDiagram.setChecked({ value: "checkedEuro" }));
+
     if (isGetvalue) {
-      getDataDiagram({ value: "eur" });
+      date.forEach((d) => {
+        getDataDiagram({ value: "eur", date: d });
+      });
+    } else {
+      dispatch(actionDiagram.clearDataDiagram({ value: "eur" }));
     }
   };
   const onChangeUsd = () => {
     let isGetvalue = !checkedUsd;
-    setCheckedUsd(!checkedUsd);
+    dispatch(actionDiagram.setChecked({ value: "checkedUsd" }));
+
     if (isGetvalue) {
-      getDataDiagram({ value: "usd" });
+      date.forEach((d) => {
+        getDataDiagram({ value: "usd", date: d });
+      });
+    } else {
+      dispatch(actionDiagram.clearDataDiagram({ value: "usd" }));
     }
   };
   const onChangeCny = () => {
     let isGetvalue = !checkedCny;
-    setCheckedCny(!checkedCny);
+    dispatch(actionDiagram.setChecked({ value: "checkedCny" }));
+
     if (isGetvalue) {
-      getDataDiagram({ value: "cny" });
+      date.forEach((d) => {
+        getDataDiagram({ value: "cny", date: d });
+      });
+    } else {
+      dispatch(actionDiagram.clearDataDiagram({ value: "cny" }));
     }
   };
 

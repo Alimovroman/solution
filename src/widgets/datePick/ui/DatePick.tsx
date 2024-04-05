@@ -1,20 +1,24 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import style from "./DatePick.module.css";
-import ReactDatePicker from "react-datepicker";
-import { log } from "console";
+import { diagramActions, diagramThunk } from "../../diagram/diagramSlice";
+import { useAppDispatch } from "../../../common/hooks/useAppDispatch";
 
 export const DatePick = () => {
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    new Date(Date.now() - 6 * 24 * 60 * 60 * 1000)
+  );
   const [endDate, setEndDate] = useState(new Date());
+  const dispatch = useAppDispatch();
+  const actionsDiagram = diagramActions;
 
-  const dataStart = `${startDate.getFullYear()}/${
+  const dataStart = `${startDate.getFullYear()}-${
     startDate.getMonth() + 1
-  }/${startDate.getDate()}`;
-  const dataEnd = `${endDate.getFullYear()}/${
+  }-${startDate.getDate()}`;
+  const dataEnd = `${endDate.getFullYear()}-${
     endDate.getMonth() + 1
-  }/${endDate.getDate()}`;
+  }-${endDate.getDate()}`;
 
   let mil = Math.floor(
     new Date(dataStart).getTime() - new Date(dataEnd).getTime()
@@ -23,24 +27,37 @@ export const DatePick = () => {
   const dayMs = 86400000;
 
   useEffect(() => {
+    dispatch(actionsDiagram.clearDate());
     let seconds = (mil / 1000) | 0;
-
     let minutes = (seconds / 60) | 0;
-
     let hours = (minutes / 60) | 0;
-
     let days = ((hours / 24) * -1) | 0;
-    // hours -= days * 24;
 
-    let weeks = (days / 7) | 0;
-    // days -= weeks * 7;
     for (let i = 0; i <= days; i++) {
       if (i === 0) {
-        console.log(new Date(new Date(dataStart).getTime()));
-        // } else if (i === 2) {
-        //   console.log(new Date(new Date(dataStart).getTime() + dayMs));
+        const newDate = new Date(new Date(dataStart).getTime());
+        const year = newDate.getFullYear();
+        const month =
+          newDate.getMonth() + 1 < 10
+            ? `0${newDate.getMonth() + 1}`
+            : newDate.getMonth();
+        const days =
+          newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+        const dataResult = `${year}-${month}-${days}`;
+
+        dispatch(actionsDiagram.setDate({ date: dataResult }));
       } else {
-        console.log(new Date(new Date(dataStart).getTime() + dayMs * i));
+        const newDate = new Date(new Date(dataStart).getTime() + dayMs * i);
+        const year = newDate.getFullYear();
+        const month =
+          newDate.getMonth() + 1 < 10
+            ? `0${newDate.getMonth() + 1}`
+            : newDate.getMonth();
+        const days =
+          newDate.getDate() < 10 ? `0${newDate.getDate()}` : newDate.getDate();
+        const dataResult = `${year}-${month}-${days}`;
+
+        dispatch(actionsDiagram.setDate({ date: dataResult }));
       }
     }
   }, [startDate, endDate]);
